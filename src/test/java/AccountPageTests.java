@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,11 +56,13 @@ public class AccountPageTests {
 
     @Test
     public void updateAccountRealNameTest() {
+        Timestamp currentTime = new Timestamp(new Date().getTime());
+
         Response responseUpdateRealName = RestAssured
                 .given()
                 .contentType("application/x-www-form-urlencoded")
                 .cookies(cookies)
-                .body("password_current=&password=&password_confirm=&email=rov55an3014%40mail.ru&realname=unique+real+name")
+                .body("password_current=&password=&password_confirm=&email=rov55an3014%40mail.ru&realname=unique+real+name+" + currentTime)
                 .post("https://academ-it.ru/mantisbt/account_update.php")
                 .andReturn();
 
@@ -74,6 +78,6 @@ public class AccountPageTests {
                 .get("https://academ-it.ru/mantisbt/account_page.php")
                 .andReturn();
 
-        Assertions.assertTrue(responseAccountPage.body().asString().contains("name=\"realname\" value=\"unique real name\""));
+        Assertions.assertTrue(responseAccountPage.body().asString().contains("name=\"realname\" value=\"unique real name " + currentTime + "\""));
     }
 }
